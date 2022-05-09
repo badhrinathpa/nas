@@ -11,11 +11,11 @@ TS 33.501 6.4.3.1
  NAS COUNT (24 bits) := NAS OVERFLOW (16 bits) || NAS SQN (8 bits)
 */
 type Count struct {
-	count uint32
+	Count uint32 `json:"count,omitempty" bson:"count,omitempty"`
 }
 
 func (counter *Count) maskTo24Bits() {
-	counter.count &= 0x00ffffff
+	counter.Count &= 0x00ffffff
 }
 
 func (counter *Count) Set(overflow uint16, sqn uint8) {
@@ -25,26 +25,26 @@ func (counter *Count) Set(overflow uint16, sqn uint8) {
 
 func (counter *Count) Get() uint32 {
 	counter.maskTo24Bits()
-	return counter.count
+	return counter.Count
 }
 
 func (counter *Count) AddOne() {
-	counter.count++
+	counter.Count++
 	counter.maskTo24Bits()
 }
 
 func (counter *Count) SQN() uint8 {
-	return uint8(counter.count & 0x000000ff)
+	return uint8(counter.Count & 0x000000ff)
 }
 
 func (counter *Count) SetSQN(sqn uint8) {
-	counter.count = (counter.count & 0xffffff00) | uint32(sqn)
+	counter.Count = (counter.Count & 0xffffff00) | uint32(sqn)
 }
 
 func (counter *Count) Overflow() uint16 {
-	return uint16((counter.count & 0x00ffff00) >> 8)
+	return uint16((counter.Count & 0x00ffff00) >> 8)
 }
 
 func (counter *Count) SetOverflow(overflow uint16) {
-	counter.count = (counter.count & 0xff0000ff) | (uint32(overflow) << 8)
+	counter.Count = (counter.Count & 0xff0000ff) | (uint32(overflow) << 8)
 }
